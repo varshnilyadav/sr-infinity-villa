@@ -4,6 +4,81 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  // ---- Access Control Lock Screen ----
+  const lockScreen = document.getElementById('lockScreen');
+  const lockForm = document.getElementById('lockForm');
+  const lockUserId = document.getElementById('lockUserId');
+  const lockPassword = document.getElementById('lockPassword');
+  const lockError = document.getElementById('lockError');
+
+  if (lockForm) {
+    // Check if already authorized (safeguard)
+    if (sessionStorage.getItem('sr_infinity_authorized') === 'true') {
+      if (lockScreen) lockScreen.remove();
+    } else {
+      lockForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const username = lockUserId.value.trim();
+        const password = lockPassword.value;
+
+        if (username === 'varshnil' && password === 'munna') {
+          sessionStorage.setItem('sr_infinity_authorized', 'true');
+          document.documentElement.classList.remove('is-locked');
+          document.documentElement.classList.add('authorized');
+          
+          // Disable inputs during transition
+          lockUserId.disabled = true;
+          lockPassword.disabled = true;
+          const lockBtn = lockForm.querySelector('.lock-btn');
+          if (lockBtn) lockBtn.disabled = true;
+          
+          // Clean up the lock screen after fade-out transition
+          setTimeout(() => {
+            if (lockScreen) {
+              lockScreen.remove();
+            }
+          }, 600);
+        } else {
+          // Show error message
+          if (lockError) {
+            lockError.textContent = 'Invalid User ID or Password';
+            lockError.style.opacity = '1';
+          }
+          
+          // Shake the card to indicate failure
+          const lockCard = lockForm.closest('.lock-card');
+          if (lockCard) {
+            lockCard.classList.remove('lock-shake');
+            void lockCard.offsetWidth; // Trigger reflow
+            lockCard.classList.add('lock-shake');
+          }
+          
+          // Clear and focus password
+          if (lockPassword) {
+            lockPassword.value = '';
+            lockPassword.focus();
+          }
+        }
+      });
+
+      // Clear error message when user starts typing again
+      const clearError = () => {
+        if (lockError && lockError.textContent) {
+          lockError.style.opacity = '0';
+          setTimeout(() => {
+            if (lockError.style.opacity === '0') {
+              lockError.textContent = '';
+            }
+          }, 200);
+        }
+      };
+
+      if (lockUserId) lockUserId.addEventListener('input', clearError);
+      if (lockPassword) lockPassword.addEventListener('input', clearError);
+    }
+  }
+
   // ---- Navbar Scroll Effect ----
   const navbar = document.getElementById('navbar');
   const navLinks = document.querySelectorAll('.navbar__link');
