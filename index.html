@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -11,8 +11,44 @@
   <meta property="og:type" content="website">
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🏡</text></svg>">
+  <script>
+    (function() {
+      if (sessionStorage.getItem('sr_infinity_authorized') === 'true') {
+        document.documentElement.classList.add('authorized');
+      } else {
+        document.documentElement.classList.add('is-locked');
+      }
+    })();
+  </script>
 </head>
 <body>
+
+  <!-- ============ ACCESS CONTROL LOCK SCREEN ============ -->
+  <div class="lock-screen" id="lockScreen">
+    <div class="lock-card">
+      <div class="lock-card__header">
+        <div class="lock-card__logo">
+          <span class="sr">SR</span> <span class="infinity">Infinity</span>
+          <span class="villas">Villas</span>
+        </div>
+        <p class="lock-card__subtitle">Private Showcase Access</p>
+      </div>
+      <form class="lock-card__form" id="lockForm">
+        <div class="lock-form-group">
+          <label for="lockUserId">User ID</label>
+          <input type="text" id="lockUserId" placeholder="Enter User ID" required autocomplete="username">
+        </div>
+        <div class="lock-form-group">
+          <label for="lockPassword">Password</label>
+          <input type="password" id="lockPassword" placeholder="Enter Password" required autocomplete="current-password">
+        </div>
+        <div class="lock-error" id="lockError"></div>
+        <button type="submit" class="lock-btn">
+          <span>Unlock Access</span>
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- ============ NAVIGATION ============ -->
   <nav class="navbar" id="navbar">
